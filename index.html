@@ -217,7 +217,7 @@
                     <label>Σχέση με Κατηγορούμενο:</label>
                     <select id="doc_relation_simple">
                         <option value="τον κατηγορούμενο δε γνωρίζει">Δεν γνωρίζει</option>
-                        <option value="τον κατηγορούμενο γνωρίζει">Γνωρίζει απλά</option>
+                        <option value="τον κατηγορούμενο γνωρίζει (απλά)">Γνωρίζει απλά</option>
                         <option value="τον κατηγορούμενο γνωρίζει ως γείτονα">Γείτονας</option>
                         <option value="τον κατηγορούμενο γνωρίζει φιλικά">Φίλος / Γνωστός</option>
                         <option value="τυγχάνει συγγενής του κατηγορουμένου">Συγγενής</option>
@@ -557,7 +557,8 @@
         spinner.style.display = "inline-block";
 
         try {
-            let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            // Χρησιμοποιούμε το gemini-pro για απόλυτη συμβατότητα με το API v1beta
+            let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -606,7 +607,6 @@
         let resultText = await callGeminiAPI(prompt, "btn_check_rule", "spinner_rule");
         
         if (resultText) {
-            // Μετατροπή των line breaks σε HTML br
             resDiv.innerHTML = "<strong>Αξιολόγηση Χρυσού Κανόνα:</strong><br><br>" + resultText.replace(/\n/g, "<br>");
             resDiv.style.display = "block";
         }
