@@ -2,7 +2,7 @@
 <html lang="el">
 <head>
     <meta charset="UTF-8">
-    <title>Προανακριτική Μηχανή - PC Edition</title>
+    <title>Προανακριτική Μηχανή - AI Edition</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 15px; background-color: #e9ecef; }
         .container { display: flex; flex-direction: column; gap: 12px; max-width: 1100px; margin: auto; }
@@ -12,6 +12,9 @@
         .header-box h1 { margin: 0; font-size: 26px; letter-spacing: 1px; text-transform: uppercase; }
         .header-box p { margin: 5px 0 0 0; font-size: 14px; opacity: 0.9; color: #ffeb3b; font-weight: bold;}
 
+        /* AI Settings Box */
+        .ai-settings { background: #fdfcff; border: 1px solid #ffd54f; border-left: 5px solid #ff9800; padding: 12px; border-radius: 6px; margin-bottom: 5px; }
+        
         .section { background-color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 5px;}
         .section-title { background: #003366; color: white; padding: 8px 15px; border-radius: 4px; margin: -20px -20px 15px -20px; font-size: 15px; font-weight: bold;}
         
@@ -19,7 +22,7 @@
         .grid-form { display: grid; grid-template-columns: repeat(4, 1fr); column-gap: 15px; row-gap: 10px; margin-top: 10px; }
         .form-group { display: flex; flex-direction: column; }
         label { font-weight: bold; font-size: 12px; color: #333; margin-bottom: 3px; }
-        input[type="text"], select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; box-sizing: border-box; width: 100%;}
+        input[type="text"], input[type="password"], select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; box-sizing: border-box; width: 100%;}
         
         /* Χρωματική Σήμανση Πεδίων */
         .manual-input { border-left: 3px solid #f0ad4e; background-color: #fffaf0; } 
@@ -32,8 +35,11 @@
         .btn-parse { background-color: #17a2b8; flex: 2; }
         .btn-clear { background-color: #6c757d; flex: 1; }
         .btn-add { background-color: #17a2b8; padding: 6px; border-radius: 4px; color: white; cursor: pointer; height: 100%;}
-        .btn-ai { background-color: #8e44ad; color: white; padding: 8px; font-size: 13px; border-radius: 4px; cursor: pointer; border: none; font-weight: bold; width: 100%;}
-        .btn-ai:hover { background-color: #732d91; }
+        
+        /* AI Button Styling */
+        .btn-ai { background: linear-gradient(135deg, #8e44ad 0%, #6f42c1 100%); color: white; padding: 10px; font-size: 14px; border-radius: 6px; cursor: pointer; border: none; font-weight: bold; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 4px rgba(142, 68, 173, 0.3);}
+        .btn-ai:hover { background: linear-gradient(135deg, #732d91 0%, #5a32a3 100%); box-shadow: 0 4px 6px rgba(142, 68, 173, 0.4); }
+        .btn-ai:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
         
         /* Κουμπιά Λήψης */
         .btn-word { background-color: #0056b3; width: 100%; margin-top: 15px; font-size: 15px; padding: 12px; border-radius: 6px;}
@@ -70,16 +76,21 @@
         .step-box { border: 2px solid #e0e0e0; border-radius: 6px; padding: 12px; margin-bottom: 15px; background: #fafafa; }
         .step-title { font-size: 14px; font-weight: bold; margin-top: -22px; margin-bottom: 10px; display: inline-block; background: white; padding: 0 8px; color: #333; border-radius: 4px; border: 1px solid #ddd;}
         
-        .ai-box { background: #f0f4f8; border: 1px solid #b3cce6; padding: 12px; border-radius: 6px; margin-bottom: 15px; }
-        
+        .ai-box { background: #f4ecf8; border: 1px solid #cbb3f5; border-left: 4px solid #8e44ad; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+        .ai-result { background: #e8f5e9; border: 1px solid #c3e6cb; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 13px; color: #155724; display: none; }
+        .ai-result.error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+
         .arrest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 10px; }
-        
         .time-grid-wrapper { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; width: 100%; }
         .time-box { display: flex; gap: 5px; width: 100%; }
         .time-box input { flex: 1; min-width: 0; box-sizing: border-box; text-align: center; font-weight: bold; color: #003366; }
         
         /* Grid για τα πεδία Μαρτύρων μέσα στις καρτέλες */
         .witness-settings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 4px; border: 1px solid #eee;}
+
+        /* Loading Spinner */
+        .spinner { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #fff; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -87,8 +98,23 @@
 <div class="container">
     
     <div class="header-box">
-        <h1>⚙️ Προανακριτικη Μηχανη</h1>
-        <p>💻 PC Edition (Ολοκληρωμένο Σύστημα Δικογραφιών)</p>
+        <h1>⚙️ Προανακριτικη Μηχανη AI</h1>
+        <p>💻 PC Edition (Powered by Gemini AI)</p>
+    </div>
+
+    <div class="ai-settings">
+        <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleAI()">
+            <strong style="color: #e65100;">✨ Ρυθμίσεις Τεχνητής Νοημοσύνης (Gemini API)</strong>
+            <span id="ai_arrow">⬇️ Άνοιγμα</span>
+        </div>
+        <div id="ai_settings_panel" style="display: none; margin-top: 10px;">
+            <p style="font-size: 12px; color: #666;">Για να λειτουργήσουν τα εργαλεία AI, επικολλήστε το δωρεάν Gemini API Key σας. Το κλειδί <b>αποθηκεύεται μόνο τοπικά</b> στον browser σας για ασφάλεια.</p>
+            <div style="display: flex; gap: 10px;">
+                <input type="password" id="gemini_api_key" placeholder="Επικόλληση κλειδιού (π.χ. AIzaSy...)" style="flex: 2;">
+                <button onclick="saveApiKey()" style="background-color: #ff9800; flex: 1;">💾 Αποθήκευση</button>
+            </div>
+            <p id="key_status" style="font-size: 12px; color: green; display: none; margin-top: 5px;">✅ Το κλειδί αποθηκεύτηκε με επιτυχία!</p>
+        </div>
     </div>
 
     <div class="section">
@@ -136,8 +162,8 @@
             <div class="form-group"><label>Ημερομηνία</label><input type="text" id="doc_date"></div>
             <div class="form-group"><label>Μήνας</label><input type="text" id="doc_month"></div>
             <div class="form-group"><label>Έτος</label><input type="text" id="doc_year"></div>
-            <div class="form-group"><label>Ώρα Έναρξης (Μάρτυρας)</label><input type="text" id="doc_start" class="accent-warning"></div>
-            <div class="form-group"><label>Ώρα Λήξης (Μάρτυρας)</label><input type="text" id="doc_end" class="accent-warning"></div>
+            <div class="form-group"><label>Ώρα Έναρξης</label><input type="text" id="doc_start" class="accent-warning"></div>
+            <div class="form-group"><label>Ώρα Λήξης</label><input type="text" id="doc_end" class="accent-warning"></div>
         </div>
 
         <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-top: 0; margin-bottom: 0;">
@@ -180,9 +206,9 @@
         <div class="tabs">
             <div class="tab-btn active" onclick="switchTab('simple', this)">📝 Απλή Ένορκη</div>
             <div class="tab-btn" onclick="switchTab('dv', this)">⚠️ Ενδοοικ. Μάρτυρας</div>
-            <div class="tab-btn tab-btn-orange" onclick="switchTab('prok', this)">📁 Προκαταρκτική Εξέταση</div>
-            <div class="tab-btn" onclick="switchTab('apologia', this)">⚖️ Κατηγορούμενος (Σύλληψη)</div>
-            <div class="tab-btn" style="background-color: #d1ecf1; border-color: #bee5eb; color: #0c5460;" onclick="switchTab('drugs', this)">💊 Ναρκωτικά / Κατασχέσεις</div>
+            <div class="tab-btn tab-btn-orange" onclick="switchTab('prok', this)">📁 Προκαταρκτική</div>
+            <div class="tab-btn" onclick="switchTab('apologia', this)">⚖️ Κατηγορούμενος</div>
+            <div class="tab-btn" style="background-color: #d1ecf1; border-color: #bee5eb; color: #0c5460;" onclick="switchTab('drugs', this)">💊 Ναρκωτικά</div>
         </div>
 
         <div id="tab_simple" class="tab-content active">
@@ -215,12 +241,23 @@
             </div>
 
             <div class="info-text" style="background-color: #fff3cd; border-left: 4px solid #ffc107; font-size: 13px;">
-                <strong>💡 Ο χρυσός κανόνας της προανάκρισης!</strong> Για να είναι πλήρης μια κατάθεση πρέπει να απαντούνται τα παρακάτω ερωτήματα: <b>ΠΟΥ, ΠΟΤΕ, ΠΟΙΟΣ, ΤΙ, ΓΙΑΤΙ</b>.
+                <strong>💡 Ο χρυσός κανόνας της προανάκρισης!</strong> Απαντήστε: <b>ΠΟΥ, ΠΟΤΕ, ΠΟΙΟΣ, ΤΙ, ΓΙΑΤΙ</b>. 
+                <br><span style="color: #8e44ad;">🤖 Χρησιμοποιήστε την Τεχνητή Νοημοσύνη (παρακάτω) για να ελέγξετε αν ξεχάσατε κάτι!</span>
             </div>
+            
             <div style="margin-top: 15px;">
                 <label style="font-size: 14px; color: #0056b3; display: block; font-weight: bold; margin-bottom: 5px;">ΕΡΩΤΗΣΗ: Τι προσήλθατε να καταθέσετε στο Α.Τ. Βόλβης;</label>
-                <textarea id="doc_testimony_simple" style="height: 180px;" placeholder="Περιγράψτε την υπόθεση (π.χ. 'Σήμερα και περί ώρα...')."></textarea>
+                <textarea id="doc_testimony_simple" style="height: 150px;" placeholder="Περιγράψτε την υπόθεση..."></textarea>
             </div>
+            
+            <div style="margin-top: 10px;">
+                <button class="btn-ai" id="btn_check_rule" onclick="checkGoldenRule()">
+                    <span id="spinner_rule" class="spinner" style="display: none;"></span>
+                    ✨ AI Έλεγχος "Χρυσού Κανόνα"
+                </button>
+                <div id="ai_golden_rule_result" class="ai-result"></div>
+            </div>
+
             <button class="btn-word" onclick="exportToWord()">💾 Λήψη Έκθεσης σε Word (.doc) - ΕΝΟΡΚΗ</button>
         </div>
 
@@ -309,7 +346,7 @@
                 
                 <div class="form-group" style="margin-top: 15px;">
                     <label style="color: #e67300; font-size: 13px;">Κείμενο Εξηγήσεων (Για Ανωμοτί Εξέταση):</label>
-                    <textarea id="prok_plea" style="height: 100px; border: 2px solid #ffcc80;" placeholder="Γράψτε εδώ τις εξηγήσεις του υπόπτου..."></textarea>
+                    <textarea id="prok_plea" style="height: 100px; border: 2px solid #ffcc80;" placeholder="Γράψτε εδώ τις εξηγήσεις του υπόπτου (ΑΠΟΚΡΙΣΗ)..."></textarea>
                 </div>
             </div>
 
@@ -325,8 +362,22 @@
         <div id="tab_apologia" class="tab-content">
             
             <div class="ai-box">
-                <span style="font-size: 13px; color: #8e44ad; font-weight: bold;">⚡ Αυτόματη Σύνθεση Βασικού Κατηγορητηρίου:</span>
-                
+                <span style="font-size: 14px; color: #8e44ad; font-weight: bold;">🤖 AI Βοηθός Κατηγορητηρίου:</span>
+                <p style="font-size: 12px; color: #555; margin-bottom: 10px; margin-top: 5px;">
+                    Περιγράψτε με απλά λόγια τι συνέβη. Η AI θα γράψει αυτόματα το "Βασικό Κατηγορητήριο" (άρθρα ΠΚ) και τα "Πραγματικά Περιστατικά" σε νομική γλώσσα.<br>
+                    <i>⚠️ Προσοχή: Μην γράφετε πραγματικά ονόματα ή Α.Φ.Μ. εδώ. Χρησιμοποιήστε τα αρχικά (π.χ. ο Κ.Μ.).</i>
+                </p>
+                <div style="display: flex; gap: 10px;">
+                    <textarea id="ai_rough_notes" style="flex: 2; height: 50px; border: 2px dashed #8e44ad; padding: 8px;" placeholder="π.χ. Σήμερα το πρωί μπήκε στο περίπτερο, έβρισε τον ιδιοκτήτη και του πήρε 50 ευρώ από το ταμείο..."></textarea>
+                    <button class="btn-ai" id="btn_generate_charge" style="flex: 1;" onclick="generateChargeAI()">
+                        <span id="spinner_charge" class="spinner" style="display: none;"></span>
+                        ✨ Σύνθεση με AI
+                    </button>
+                </div>
+            </div>
+
+            <div style="border: 1px solid #ccc; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                <span style="font-size: 13px; color: #333; font-weight: bold;">Χειροκίνητη Σύνθεση Βασικού Κατηγορητηρίου:</span>
                 <div style="display: flex; gap: 10px; margin-top: 10px; align-items: flex-end;">
                     <div class="form-group" style="flex: 2;">
                         <label>Λίστα Αδικημάτων:</label>
@@ -361,9 +412,9 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-top: 10px; margin-bottom: 15px;">
+                <div class="form-group" style="margin-top: 10px; margin-bottom: 12px;">
                     <div style="display: flex; gap: 5px;">
-                        <input type="text" id="ai_law" placeholder="Τα επιλεγμένα αδικήματα θα μπουν εδώ..." style="flex: 1; border: 2px solid #8e44ad;">
+                        <input type="text" id="ai_law" placeholder="Τα επιλεγμένα αδικήματα θα μπουν εδώ..." style="flex: 1;">
                         <button type="button" class="btn-clear" onclick="clearCrimes()" title="Εκκαθάριση Λίστας" style="padding: 0 10px;">🗑️</button>
                     </div>
                 </div>
@@ -374,17 +425,17 @@
                     <div class="form-group"><label>Τόπος Τέλεσης:</label><input type="text" id="ai_loc" placeholder="π.χ. Σταυρό Θεσ/νίκης"></div>
                 </div>
                 
-                <button type="button" class="btn-ai" onclick="generateAutoCharge()">✍️ Δημιουργία Βασικού Κατηγορητηρίου</button>
+                <button type="button" class="btn-add" style="width: 100%;" onclick="generateAutoCharge()">Σύνθεση Κειμένου</button>
             </div>
 
             <div class="form-group" style="margin-bottom: 12px;">
                 <label style="color:#0056b3; font-size: 13px;">Βασικό Κατηγορητήριο (Μπαίνει Σύλληψη, Δικαιώματα & Απολογία)</label>
-                <textarea id="apologia_charge_short" style="height: 50px; border: 2px solid #b3cce6;" placeholder="π.χ. παράβαση του... πράξη που έλαβε χώρα..."></textarea>
+                <textarea id="apologia_charge_short" style="height: 50px; border: 2px solid #b3cce6;" placeholder="π.χ. παράβαση του... πράξεις που έλαβαν χώρα..."></textarea>
             </div>
             
             <div class="form-group" style="margin-bottom: 20px;">
                 <label style="color:#28a745; font-size: 13px;">Πραγματικά Περιστατικά (Μπαίνει ΜΟΝΟ στην Απολογία)</label>
-                <textarea id="apologia_charge_details" style="height: 60px; border: 2px solid #c3e6cb;" placeholder="Ειδικότερα,..."></textarea>
+                <textarea id="apologia_charge_details" style="height: 70px; border: 2px solid #c3e6cb;" placeholder="Ειδικότερα,..."></textarea>
             </div>
 
             <div class="info-text" style="background: #e6f7ff; border-left: 4px solid #0056b3;">
@@ -464,7 +515,139 @@
 </div>
 
 <script>
-    // Λειτουργίες AI Κατηγορητηρίου
+    // --- AI LOGIC (GEMINI API) ---
+    function toggleAI() {
+        let panel = document.getElementById("ai_settings_panel");
+        let arrow = document.getElementById("ai_arrow");
+        if (panel.style.display === "none") {
+            panel.style.display = "block";
+            arrow.innerHTML = "⬆️ Κλείσιμο";
+        } else {
+            panel.style.display = "none";
+            arrow.innerHTML = "⬇️ Άνοιγμα";
+        }
+    }
+
+    function saveApiKey() {
+        let key = document.getElementById("gemini_api_key").value.trim();
+        if (key) {
+            localStorage.setItem("gemini_api_key", key);
+            document.getElementById("key_status").style.display = "block";
+            setTimeout(() => { document.getElementById("key_status").style.display = "none"; }, 3000);
+        } else {
+            alert("Παρακαλώ εισάγετε ένα έγκυρο API Key.");
+        }
+    }
+
+    // Φόρτωση του κλειδιού κατά την εκκίνηση
+    if (localStorage.getItem("gemini_api_key")) {
+        document.getElementById("gemini_api_key").value = localStorage.getItem("gemini_api_key");
+    }
+
+    async function callGeminiAPI(prompt, buttonId, spinnerId) {
+        let apiKey = localStorage.getItem("gemini_api_key");
+        if (!apiKey) {
+            alert("Απαιτείται Gemini API Key! Ανοίξτε τις 'Ρυθμίσεις Τεχνητής Νοημοσύνης' στην κορυφή της σελίδας, βάλτε το κλειδί σας και πατήστε Αποθήκευση.");
+            return null;
+        }
+
+        let btn = document.getElementById(buttonId);
+        let spinner = document.getElementById(spinnerId);
+        btn.disabled = true;
+        spinner.style.display = "inline-block";
+
+        try {
+            let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            });
+            
+            let data = await response.json();
+            
+            btn.disabled = false;
+            spinner.style.display = "none";
+
+            if (data.error) {
+                throw new Error(data.error.message);
+            }
+            
+            return data.candidates[0].content.parts[0].text;
+            
+        } catch (e) {
+            btn.disabled = false;
+            spinner.style.display = "none";
+            alert("Σφάλμα επικοινωνίας με την AI: " + e.message);
+            return null;
+        }
+    }
+
+    async function checkGoldenRule() {
+        let text = document.getElementById("doc_testimony_simple").value.trim();
+        let resDiv = document.getElementById("ai_golden_rule_result");
+        
+        if (!text) {
+            resDiv.innerHTML = "Παρακαλώ γράψτε πρώτα την κατάθεση στο από πάνω πλαίσιο.";
+            resDiv.className = "ai-result error";
+            resDiv.style.display = "block";
+            return;
+        }
+
+        let prompt = `Είσαι βοηθός Έλληνα Προανακριτικού Υπαλλήλου. Διάβασε την παρακάτω κατάθεση. Έλεγξε αν απαντώνται καθαρά τα 5 ερωτήματα του 'Χρυσού Κανόνα της Προανάκρισης': 
+        1) ΠΟΥ (τόπος), 2) ΠΟΤΕ (χρόνος), 3) ΠΟΙΟΣ (δράστης/εμπλεκόμενοι), 4) ΤΙ (πράξη), 5) ΓΙΑΤΙ (κίνητρο). 
+        Επίστρεψε ΜΟΝΟ μια πολύ σύντομη αναφορά με bullets (χρησιμοποίησε ✅ για όσα υπάρχουν ξεκάθαρα και ❌ για όσα λείπουν ή είναι ασαφή). 
+        Κατάθεση: "${text}"`;
+
+        resDiv.style.display = "none";
+        resDiv.className = "ai-result";
+        
+        let resultText = await callGeminiAPI(prompt, "btn_check_rule", "spinner_rule");
+        
+        if (resultText) {
+            // Μετατροπή των line breaks σε HTML br
+            resDiv.innerHTML = "<strong>Αξιολόγηση Χρυσού Κανόνα:</strong><br><br>" + resultText.replace(/\n/g, "<br>");
+            resDiv.style.display = "block";
+        }
+    }
+
+    async function generateChargeAI() {
+        let text = document.getElementById("ai_rough_notes").value.trim();
+        if (!text) {
+            alert("Παρακαλώ γράψτε μια σύντομη περιγραφή του συμβάντος στο πλαίσιο.");
+            return;
+        }
+
+        let prompt = `Είσαι νομικός βοηθός Προανακριτικού Υπαλλήλου. Διάβασε την εξής απλή περιγραφή συμβάντος: "${text}".
+        Θέλω να συντάξεις 2 πράγματα:
+        1. Το 'Βασικό Κατηγορητήριο'. Βρες ποια άρθρα του Ελληνικού Ποινικού Κώδικα (π.χ. Κλοπή 372, Σωματική Βλάβη 308, Εξύβριση 361 κλπ) παραβιάζονται και γράψε το κείμενο με τη μορφή: "παράβαση του άρθρου [Χ] Π.Κ. [Όνομα αδικήματος], πράξη/πράξεις που έλαβε/έλαβαν χώρα την [Ημερομηνία αν αναφέρεται, αλλιώς άστο κενό] στο [Τόπος αν αναφέρεται, αλλιώς άστο κενό]."
+        2. Τα 'Πραγματικά Περιστατικά'. Μετάτρεψε την απλή περιγραφή σε επίσημη αστυνομική/νομική γλώσσα (π.χ. "Ειδικότερα, την ανωτέρω ημέρα και ώρα, ο κατηγορούμενος...").
+        
+        Δώσε την απάντησή σου ΑΥΣΤΗΡΑ με την εξής δομή και τίποτα άλλο:
+        [ΒΑΣΙΚΟ]
+        εδώ το κείμενο 1
+        [ΠΕΡΙΣΤΑΤΙΚΑ]
+        εδώ το κείμενο 2`;
+
+        let resultText = await callGeminiAPI(prompt, "btn_generate_charge", "spinner_charge");
+        
+        if (resultText) {
+            try {
+                let parts = resultText.split("[ΠΕΡΙΣΤΑΤΙΚΑ]");
+                let basicPart = parts[0].replace("[ΒΑΣΙΚΟ]", "").trim();
+                let detailsPart = parts[1].trim();
+
+                document.getElementById("apologia_charge_short").value = basicPart;
+                document.getElementById("apologia_charge_details").value = detailsPart;
+            } catch (e) {
+                alert("Δεν ήταν δυνατή η σωστή ανάγνωση της απάντησης του AI. Δοκιμάστε να γράψετε πιο καθαρά την περιγραφή.");
+            }
+        }
+    }
+
+
+    // --- ΚΛΑΣΙΚΕΣ ΛΕΙΤΟΥΡΓΙΕΣ ---
     function addSelectedCrime() {
         let dropdown = document.getElementById("ai_crime_dropdown");
         let selectedCrime = dropdown.value;
@@ -516,23 +699,19 @@
         const timeStr = (date) => String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
         const dateStr = String(now.getDate()).padStart(2, '0') + "-" + String(now.getMonth()+1).padStart(2, '0') + "-" + now.getFullYear();
         
-        // Γενικά στοιχεία
         document.getElementById('doc_day').value = days[now.getDay()];
         document.getElementById('doc_date').value = String(now.getDate()).padStart(2, '0');
         document.getElementById('doc_month').value = months[now.getMonth()];
         document.getElementById('doc_year').value = now.getFullYear();
         
-        // Ώρες Απλού Μάρτυρα
         document.getElementById('doc_start').value = timeStr(now);
         document.getElementById('doc_end').value = timeStr(addMins(now, 15));
 
-        // Ώρες Ροής Κατηγορουμένου
         let t1 = now; let t2 = addMins(t1, 10); let t3 = addMins(t2, 10); let t4 = addMins(t3, 15); 
         document.getElementById('arr_start').value = timeStr(t1); document.getElementById('arr_end').value = timeStr(t2);
         document.getElementById('rig_start').value = timeStr(t2); document.getElementById('rig_end').value = timeStr(t3);
         document.getElementById('apo_start').value = timeStr(t3); document.getElementById('apo_end').value = timeStr(t4);
 
-        // Προ-συμπλήρωση πεδίων
         document.getElementById('ai_date').value = dateStr; document.getElementById('ai_time').value = timeStr(now);
         document.getElementById('arr_street_date').value = dateStr; document.getElementById('arr_street_time').value = timeStr(now);
 
@@ -556,7 +735,6 @@
         document.getElementById('tab_' + tabId).classList.add('active');
     }
 
-    // ΚΑΝΟΝΕΣ ΚΕΙΜΕΝΟΥ
     function toTitleCase(str) { if (!str) return ""; return str.toLowerCase().charAt(0).toUpperCase() + str.toLowerCase().slice(1); }
     function toTitleCaseWords(str) { if (!str) return ""; return str.split(" ").map(w => { if (w.toUpperCase() === "Α.Τ.") return "Α.Τ."; if (w.toUpperCase() === "Τ.Α.") return "Τ.Α."; return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(" "); }
     function toGenitive(name) { if(!name) return ""; let n = toTitleCase(name); if (n.endsWith("ος")) return n.slice(0, -2) + "ου"; if (n.endsWith("ης")) return n.slice(0, -1); if (n.endsWith("ας")) return n.slice(0, -1); if (n.endsWith("α")) return n + "ς"; if (n.endsWith("η")) return n + "ς"; return n; }
@@ -634,7 +812,6 @@
         return text.replace(/\s+/g, ' ').replace(/ ,/g, ',');
     }
 
-    // ΠΛΗΡΗΣ ΣΤΟΙΧΙΣΗ 
     let pStyle = "text-align: justify; font-family: 'Times New Roman'; font-size: 12pt; line-height: 115%; margin: 0cm; padding: 0cm;";
 
     function formatTextToParagraphs(text) {
@@ -649,7 +826,6 @@
         return html;
     }
 
-    // ΣΥΝΘΕΣΗ ΚΕΙΜΕΝΟΥ ΜΑΡΤΥΡΑ 
     function buildWitnessTestimonyText(isDV) {
         let copyOption = isDV ? document.getElementById("doc_copy_dv").value : document.getElementById("doc_copy_simple").value;
         let paravoloAnswer = isDV ? document.getElementById("doc_paravolo_dv").value : document.getElementById("doc_paravolo_simple").value;
@@ -657,15 +833,10 @@
         
         if (!isDV) {
             let story = document.getElementById("doc_testimony_simple").value.trim();
-            
             finalHtml += `<p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Τι προσήλθατε να καταθέσετε στο Α.Τ. Βόλβης;</p>`;
-            if (story) {
-                finalHtml += formatTextToParagraphs("<b>ΑΠΟΚΡΙΣΗ:</b> " + story);
-            } else {
-                finalHtml += `<p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> </p>`; 
-            }
+            if (story) { finalHtml += formatTextToParagraphs("<b>ΑΠΟΚΡΙΣΗ:</b> " + story); } 
+            else { finalHtml += `<p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> </p>`; }
             finalHtml += `<p style="${pStyle}">Κάτι άλλο δεν έχω να προσθέσω και υπογράφω.</p>`;
-            
         } else {
             let mainQ = document.getElementById("dv_q_main").value.trim();
             finalHtml += `<p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Τι προσήλθατε να καταθέσετε στο Α.Τ. Βόλβης; <b>ΑΠΟΚΡΙΣΗ:</b> ${mainQ}</p>`;
@@ -685,7 +856,6 @@
             }
         }
         
-        // ΕΡΩΤΗΣΗ ΠΑΡΑΒΟΛΟΥ 
         if (isDV) {
             if (paravoloAnswer === "YES_3DAYS") {
                 finalHtml += `<p style="${pStyle}">&nbsp;</p><p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Γνωρίζεις ότι για την άσκηση της ποινικής δίωξης αναφορικά με τα κατ' έγκληση διωκόμενα αδικήματα που περιγράφεις απαιτείται η προσκόμιση παραβόλου;</p><p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> Ναι το γνωρίζω και θα το προσκομίσω εντός 3 ημερών.</p>`;
@@ -714,7 +884,6 @@
         document.body.appendChild(link); link.click(); document.body.removeChild(link);
     }
 
-    // --- ΕΞΑΓΩΓΗ ΕΝΟΡΚΗΣ ΜΑΡΤΥΡΑ ---
     function exportToWord() {
         let v = id => document.getElementById(id).value.trim(); 
         let gender = document.getElementById("gender").value; 
@@ -737,7 +906,6 @@
         downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Ένορκη</title></head><body>" + body + "</body></html>", `ΕΚΘΕΣΗ_ΕΝΟΡΚΗ_ΜΑΡΤΥΡΑ_${v("surname")}.doc`);
     }
 
-    // --- ΕΞΑΓΩΓΗ ΧΩΡΙΣ ΟΡΚΟ ---
     function exportToWordNoOath() {
         let v = id => document.getElementById(id).value.trim(); 
         let gender = document.getElementById("gender").value; 
@@ -760,7 +928,6 @@
         downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Χωρίς Όρκο</title></head><body>" + body + "</body></html>", `ΕΚΘΕΣΗ_ΧΩΡΙΣ_ΟΡΚΟ_ΕΝΔΟΟΙΚΟΓΕΝΕΙΑΚΗ_${v("surname")}.doc`);
     }
 
-    // --- ΕΞΑΓΩΓΗ ΠΡΟΚΑΤΑΡΚΤΙΚΗΣ ---
     function exportProkRights() {
         let v = id => document.getElementById(id).value.trim(); 
         let gender = document.getElementById("gender").value; 
@@ -792,7 +959,6 @@
         let anakr = document.getElementById("doc_anakr").value; let banakr = document.getElementById("doc_banakr").value;
         let a_o = (gender === 'M') ? "ο" : "η"; let a_os = (gender === 'M') ? "ο οποίος" : "η οποία"; let a_tou = (gender === 'M') ? "του" : "της"; let a_exet = (gender === 'M') ? "εξεταζόμενος" : "εξεταζόμενη"; let a_sign = (gender === 'M') ? "Ο Εξετασθείς Ύποπτος" : "Η Εξετασθείσα Ύποπτη";
         let abm = v("prok_abm") || "... (συμπληρώστε ΑΒΜ/Παραγγελία) ...";
-        
         let pleaAns = formatTextToParagraphs("<b>ΑΠΟΚΡΙΣΗ:</b> " + v("prok_plea")); 
 
         var body = `
@@ -842,7 +1008,6 @@
         let a_o = (gender === 'M') ? "ο" : "η"; let a_os = (gender === 'M') ? "ο οποίος" : "η οποία"; let a_tou = (gender === 'M') ? "του" : "της"; let a_exet = (gender === 'M') ? "εξεταζόμενος" : "εξεταζόμενη"; let a_sign = (gender === 'M') ? "Ο Εξετασθείς Ύποπτος" : "Η Εξετασθείσα Ύποπτη";
         let abm = v("prok_abm") || "... (συμπληρώστε ΑΒΜ/Παραγγελία) ...";
         let d_date = v("prok_dead_date") || "...";
-        
         let pleaAns = formatTextToParagraphs("<b>ΑΠΟΚΡΙΣΗ:</b> " + v("prok_plea")); 
 
         var body = `
@@ -882,7 +1047,6 @@
         downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Υπόμνημα</title></head><body>" + body + "</body></html>", `5_ΥΠΟΜΝΗΜΑ_${v("surname")}.doc`);
     }
 
-    // --- ΕΞΑΓΩΓΗ ΣΥΛΛΗΨΗΣ ---
     function exportArrest() {
         let v = id => document.getElementById(id).value.trim(); 
         let gender = document.getElementById("gender").value; 
@@ -916,7 +1080,6 @@
         downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Σύλληψη</title></head><body>" + body + "</body></html>", `1_ΕΚΘΕΣΗ_ΣΥΛΛΗΨΗΣ_${v("surname")}.doc`);
     }
 
-    // --- ΕΞΑΓΩΓΗ ΝΑΡΚΩΤΙΚΩΝ (ΚΑΤΑΣΧΕΣΗ) ---
     function exportSeizure() {
         let v = id => document.getElementById(id).value.trim(); 
         let titleType = document.getElementById("drug_search_type").value;
@@ -939,7 +1102,6 @@
         downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Κατάσχεση</title></head><body>" + body + "</body></html>", `ΚΑΤΑΣΧΕΣΗ_${v("surname")}.doc`);
     }
 
-    // --- ΕΞΑΓΩΓΗ ΝΑΡΚΩΤΙΚΩΝ (ΖΥΓΙΣΗ) ---
     function exportWeighing() {
         let v = id => document.getElementById(id).value.trim(); 
         let drugType = v("drug_type") || "...";
@@ -961,7 +1123,6 @@
         downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Ζύγιση</title></head><body>" + body + "</body></html>", `ΖΥΓΙΣΗ_${v("surname")}.doc`);
     }
 
-    // --- ΕΞΑΓΩΓΗ ΝΑΡΚΩΤΙΚΩΝ (ΓΝΩΣΤΟΠΟΙΗΣΗ) ---
     function exportNotification() {
         let v = id => document.getElementById(id).value.trim(); 
         let anakr = document.getElementById("doc_anakr").value; let banakr = document.getElementById("doc_banakr").value;
