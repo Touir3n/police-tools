@@ -539,7 +539,6 @@
         }
     }
 
-    // Φόρτωση του κλειδιού κατά την εκκίνηση
     if (localStorage.getItem("gemini_api_key")) {
         document.getElementById("gemini_api_key").value = localStorage.getItem("gemini_api_key");
     }
@@ -557,8 +556,25 @@
         spinner.style.display = "inline-block";
 
         try {
-            // Χρησιμοποιούμε το gemini-pro για απόλυτη συμβατότητα με το API v1beta
-            let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+            // Δυναμική εύρεση του σωστού μοντέλου που υποστηρίζει το κλειδί σου
+            // Αυτό αποτρέπει οριστικά το σφάλμα "model not found"
+            let modelName = "gemini-1.5-flash"; // Προεπιλογή
+            try {
+                let mRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+                let mData = await mRes.json();
+                if(mData.models) {
+                    let valid = mData.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent"));
+                    let best = valid.find(m => m.name === "models/gemini-1.5-flash") || 
+                               valid.find(m => m.name.includes("gemini-2.0-flash")) || 
+                               valid.find(m => m.name.includes("gemini-1.5")) || 
+                               valid.find(m => m.name.includes("gemini"));
+                    if(best) {
+                        modelName = best.name.replace("models/", "");
+                    }
+                }
+            } catch(e) { console.log("Αποτυχία δυναμικής εύρεσης μοντέλου, χρήση προεπιλογής."); }
+
+            let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -699,19 +715,23 @@
         const timeStr = (date) => String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
         const dateStr = String(now.getDate()).padStart(2, '0') + "-" + String(now.getMonth()+1).padStart(2, '0') + "-" + now.getFullYear();
         
+        // Γενικά στοιχεία
         document.getElementById('doc_day').value = days[now.getDay()];
         document.getElementById('doc_date').value = String(now.getDate()).padStart(2, '0');
         document.getElementById('doc_month').value = months[now.getMonth()];
         document.getElementById('doc_year').value = now.getFullYear();
         
+        // Ώρες Απλού Μάρτυρα
         document.getElementById('doc_start').value = timeStr(now);
         document.getElementById('doc_end').value = timeStr(addMins(now, 15));
 
+        // Ώρες Ροής Κατηγορουμένου
         let t1 = now; let t2 = addMins(t1, 10); let t3 = addMins(t2, 10); let t4 = addMins(t3, 15); 
         document.getElementById('arr_start').value = timeStr(t1); document.getElementById('arr_end').value = timeStr(t2);
         document.getElementById('rig_start').value = timeStr(t2); document.getElementById('rig_end').value = timeStr(t3);
         document.getElementById('apo_start').value = timeStr(t3); document.getElementById('apo_end').value = timeStr(t4);
 
+        // Προ-συμπλήρωση πεδίων
         document.getElementById('ai_date').value = dateStr; document.getElementById('ai_time').value = timeStr(now);
         document.getElementById('arr_street_date').value = dateStr; document.getElementById('arr_street_time').value = timeStr(now);
 
@@ -735,6 +755,7 @@
         document.getElementById('tab_' + tabId).classList.add('active');
     }
 
+    // ΚΑΝΟΝΕΣ ΚΕΙΜΕΝΟΥ
     function toTitleCase(str) { if (!str) return ""; return str.toLowerCase().charAt(0).toUpperCase() + str.toLowerCase().slice(1); }
     function toTitleCaseWords(str) { if (!str) return ""; return str.split(" ").map(w => { if (w.toUpperCase() === "Α.Τ.") return "Α.Τ."; if (w.toUpperCase() === "Τ.Α.") return "Τ.Α."; return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(" "); }
     function toGenitive(name) { if(!name) return ""; let n = toTitleCase(name); if (n.endsWith("ος")) return n.slice(0, -2) + "ου"; if (n.endsWith("ης")) return n.slice(0, -1); if (n.endsWith("ας")) return n.slice(0, -1); if (n.endsWith("α")) return n + "ς"; if (n.endsWith("η")) return n + "ς"; return n; }
@@ -997,7 +1018,7 @@
         <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${v("doc_start")} ώρα και περατώθηκε την ${v("doc_end")} ώρα.</p>
         <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού πρώτα αναγνώστηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
         <p style="${pStyle}">&nbsp;</p>
-        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0"><tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr></table>`;
+        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0"><tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr></table>`;
         downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Προθεσμία</title></head><body>" + body + "</body></html>", `3_ΧΟΡΗΓΗΣΗ_ΠΡΟΘΕΣΜΙΑΣ_${v("surname")}.doc`);
     }
 
