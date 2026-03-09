@@ -556,25 +556,8 @@
         spinner.style.display = "inline-block";
 
         try {
-            // Δυναμική εύρεση του σωστού μοντέλου που υποστηρίζει το κλειδί σου
-            // Αυτό αποτρέπει οριστικά το σφάλμα "model not found"
-            let modelName = "gemini-1.5-flash"; // Προεπιλογή
-            try {
-                let mRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
-                let mData = await mRes.json();
-                if(mData.models) {
-                    let valid = mData.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent"));
-                    let best = valid.find(m => m.name === "models/gemini-1.5-flash") || 
-                               valid.find(m => m.name.includes("gemini-2.0-flash")) || 
-                               valid.find(m => m.name.includes("gemini-1.5")) || 
-                               valid.find(m => m.name.includes("gemini"));
-                    if(best) {
-                        modelName = best.name.replace("models/", "");
-                    }
-                }
-            } catch(e) { console.log("Αποτυχία δυναμικής εύρεσης μοντέλου, χρήση προεπιλογής."); }
-
-            let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
+            // ΚΛΕΙΔΩΜΑ ΣΤΟ ΣΤΑΘΕΡΟ gemini-1.5-flash ΓΙΑ ΑΠΟΦΥΓΗ ΤΟΥ QUOTA ERROR (LIMIT: 0)
+            let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -683,6 +666,7 @@
         let locStr = document.getElementById("ai_loc").value.trim() || "...";
         if (!lawInput) { alert("Επιλέξτε τουλάχιστον ένα Αδίκημα."); return; }
         
+        // Λογική για πράξη / πράξεις
         let isMultiple = (lawInput.includes("και") || lawInput.includes(","));
         let actString = isMultiple ? "πράξεις οι οποίες έλαβαν χώρα" : "πράξη η οποία έλαβε χώρα";
 
@@ -1018,7 +1002,7 @@
         <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${v("doc_start")} ώρα και περατώθηκε την ${v("doc_end")} ώρα.</p>
         <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού πρώτα αναγνώστηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
         <p style="${pStyle}">&nbsp;</p>
-        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0"><tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr></table>`;
+        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0"><tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr></table>`;
         downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Προθεσμία</title></head><body>" + body + "</body></html>", `3_ΧΟΡΗΓΗΣΗ_ΠΡΟΘΕΣΜΙΑΣ_${v("surname")}.doc`);
     }
 
