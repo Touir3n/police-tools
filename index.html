@@ -85,7 +85,7 @@
         .time-box { display: flex; gap: 5px; width: 100%; }
         .time-box input { flex: 1; min-width: 0; box-sizing: border-box; text-align: center; font-weight: bold; color: #003366; }
         
-        /* Grid για τα πεδία Μαρτύρων */
+        /* Grid για τα πεδία Μαρτύρων μέσα στις καρτέλες */
         .witness-settings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 4px; border: 1px solid #eee;}
 
         /* Loading Spinner */
@@ -435,7 +435,7 @@
 
             <div class="form-group" style="margin-bottom: 12px;">
                 <label style="color:#0056b3; font-size: 13px;">Βασικό Κατηγορητήριο (Μπαίνει Σύλληψη, Δικαιώματα & Απολογία)</label>
-                <textarea id="apologia_charge_short" style="height: 50px; border: 2px solid #b3cce6;" placeholder="π.χ. παράβαση του... πράξεις που έλαβαν χώρα..."></textarea>
+                <textarea id="apologia_charge_short" style="height: 50px; border: 2px solid #b3cce6;" placeholder="π.χ. παράβαση των άρθρων... πράξεις που έλαβαν χώρα..."></textarea>
             </div>
             
             <div class="form-group" style="margin-bottom: 20px;">
@@ -680,8 +680,9 @@
 
         let prompt = `Είσαι νομικός βοηθός Προανακριτικού Υπαλλήλου. Διάβασε την εξής απλή περιγραφή συμβάντος: "${text}".
         Θέλω να συντάξεις 2 πράγματα:
-        1. Το 'Βασικό Κατηγορητήριο'. Βρες ποια άρθρα του Ελληνικού Ποινικού Κώδικα (π.χ. Κλοπή 372, Σωματική Βλάβη 308, Εξύβριση 361 κλπ) παραβιάζονται και γράψε το κείμενο με τη μορφή: "παράβαση του άρθρου [Χ] Π.Κ. [Όνομα αδικήματος], πράξη/πράξεις που έλαβε/έλαβαν χώρα την [Ημερομηνία αν αναφέρεται, αλλιώς άστο κενό] στο [Τόπος αν αναφέρεται, αλλιώς άστο κενό]."
-        2. Τα 'Πραγματικά Περιστατικά'. Μετάτρεψε την απλή περιγραφή σε επίσημη αστυνομική/νομική γλώσσα (π.χ. "Ειδικότερα, την ανωτέρω ημέρα και ώρα, ο κατηγορούμενος...").
+        1. Το 'Βασικό Κατηγορητήριο'. Βρες ποια άρθρα του Ελληνικού Ποινικού Κώδικα (π.χ. Κλοπή 372, Σωματική Βλάβη 308, Εξύβριση 361 κλπ) ή Ειδικών Ποινικών Νόμων παραβιάζονται. 
+        ΠΡΟΣΟΧΗ: Αν πρόκειται για συρροή (πολλαπλά αδικήματα) στον ίδιο χρόνο και τόπο, ΕΝΩΣΕ ΤΑ. ΜΗΝ γράφεις τον χρόνο και τον τόπο για το κάθε ένα ξεχωριστά. Γράψε τα με τη μορφή: "παράβαση των άρθρων [Χ, Υ, Ζ] Π.Κ. [Ονόματα αδικημάτων], πράξεις οι οποίες έλαβαν χώρα την [Ημερομηνία αν αναφέρεται] και ώρα [Ώρα] στο/στην [Τόπος αν αναφέρεται]." Αν είναι μόνο ένα αδίκημα, γράψε "πράξη η οποία...".
+        2. Τα 'Πραγματικά Περιστατικά'. Μετάτρεψε την απλή περιγραφή σε επίσημη αστυνομική/νομική γλώσσα (π.χ. "Ειδικότερα, την ανωτέρω ημέρα και ώρα, ο κατηγορούμενος..."). Μην βάζεις πραγματικά ονόματα, κράτα τα αρχικά.
         
         Δώσε την απάντησή σου ΑΥΣΤΗΡΑ με την εξής δομή και τίποτα άλλο:
         [ΒΑΣΙΚΟ]
@@ -758,19 +759,23 @@
         const timeStr = (date) => String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
         const dateStr = String(now.getDate()).padStart(2, '0') + "-" + String(now.getMonth()+1).padStart(2, '0') + "-" + now.getFullYear();
         
+        // Γενικά στοιχεία
         document.getElementById('doc_day').value = days[now.getDay()];
         document.getElementById('doc_date').value = String(now.getDate()).padStart(2, '0');
         document.getElementById('doc_month').value = months[now.getMonth()];
         document.getElementById('doc_year').value = now.getFullYear();
         
+        // Ώρες Απλού Μάρτυρα
         document.getElementById('doc_start').value = timeStr(now);
         document.getElementById('doc_end').value = timeStr(addMins(now, 15));
 
+        // Ώρες Ροής Κατηγορουμένου
         let t1 = now; let t2 = addMins(t1, 10); let t3 = addMins(t2, 10); let t4 = addMins(t3, 15); 
         document.getElementById('arr_start').value = timeStr(t1); document.getElementById('arr_end').value = timeStr(t2);
         document.getElementById('rig_start').value = timeStr(t2); document.getElementById('rig_end').value = timeStr(t3);
         document.getElementById('apo_start').value = timeStr(t3); document.getElementById('apo_end').value = timeStr(t4);
 
+        // Προ-συμπλήρωση πεδίων
         document.getElementById('ai_date').value = dateStr; document.getElementById('ai_time').value = timeStr(now);
         document.getElementById('arr_street_date').value = dateStr; document.getElementById('arr_street_time').value = timeStr(now);
 
@@ -794,6 +799,7 @@
         document.getElementById('tab_' + tabId).classList.add('active');
     }
 
+    // ΚΑΝΟΝΕΣ ΚΕΙΜΕΝΟΥ
     function toTitleCase(str) { if (!str) return ""; return str.toLowerCase().charAt(0).toUpperCase() + str.toLowerCase().slice(1); }
     function toTitleCaseWords(str) { if (!str) return ""; return str.split(" ").map(w => { if (w.toUpperCase() === "Α.Τ.") return "Α.Τ."; if (w.toUpperCase() === "Τ.Α.") return "Τ.Α."; return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(" "); }
     function toGenitive(name) { if(!name) return ""; let n = toTitleCase(name); if (n.endsWith("ος")) return n.slice(0, -2) + "ου"; if (n.endsWith("ης")) return n.slice(0, -1); if (n.endsWith("ας")) return n.slice(0, -1); if (n.endsWith("α")) return n + "ς"; if (n.endsWith("η")) return n + "ς"; return n; }
