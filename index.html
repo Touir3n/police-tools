@@ -16,8 +16,6 @@
         .ai-settings { background: #fdfcff; border: 1px solid #ffd54f; border-left: 5px solid #ff9800; padding: 12px; border-radius: 6px; margin-bottom: 5px; }
         
         .section { background-color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 5px;}
-        
-        /* Τροποποιημένος Τίτλος για να χωράει το κουμπί ανανέωσης ώρας */
         .section-title { background: #003366; color: white; padding: 8px 15px; border-radius: 4px; margin: -20px -20px 15px -20px; font-size: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;}
         
         /* Σφιχτό Grid */
@@ -60,7 +58,7 @@
         .flex-row { display: flex; gap: 10px; margin-top: 10px; }
         .info-text { font-size: 12px; color: #555; margin-bottom: 10px; line-height: 1.4; background: #eef; padding: 10px; border-radius: 4px;}
         
-        /* Νέο Κόκκινο Πλαίσιο Ασφαλείας (GDPR) */
+        /* Κόκκινο Πλαίσιο Ασφαλείας (GDPR) */
         .gdpr-warning { background-color: #ffebee; border-left: 5px solid #d32f2f; padding: 12px; margin-top: 10px; margin-bottom: 10px; border-radius: 4px; font-size: 13px; color: #333; }
         .gdpr-warning strong { color: #d32f2f; font-size: 14px;}
 
@@ -259,6 +257,7 @@
 
             <div class="info-text" style="background-color: #fff3cd; border-left: 4px solid #ffc107; font-size: 13px;">
                 <strong>💡 Ο χρυσός κανόνας της προανάκρισης!</strong> Απαντήστε: <b>ΠΟΥ, ΠΟΤΕ, ΠΟΙΟΣ, ΤΙ, ΓΙΑΤΙ</b>. 
+                <br><span style="color: #8e44ad;">🤖 Χρησιμοποιήστε την Τεχνητή Νοημοσύνη (παρακάτω) για να ελέγξετε αν ξεχάσατε κάτι!</span>
             </div>
             
             <div style="margin-top: 15px;">
@@ -344,7 +343,7 @@
                 <strong>📁 ΠΡΟΚΑΤΑΡΚΤΙΚΗ ΕΞΕΤΑΣΗ (Άρθρο 244 Κ.Π.Δ.):</strong> Εξαγωγή εγγράφων για ενημέρωση δικαιωμάτων υπόπτου, χορήγηση προθεσμίας και ανωμοτί κατάθεση.
             </div>
             
-            <div class="ai-box" style="border-color: #ffcc80; background: #fffcf8;">
+            <div style="border: 1px solid #ffcc80; background: #fffcf8; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
                 <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 10px;">
                     <div class="form-group" style="grid-column: span 2;">
                         <label style="color: #e67300;">Α.Β.Μ. / Αριθμός Εισαγγελικής Παραγγελίας:</label>
@@ -366,7 +365,7 @@
                 
                 <div class="form-group" style="margin-top: 15px;">
                     <label style="color: #e67300; font-size: 13px;">Κείμενο Εξηγήσεων (Για Ανωμοτί Εξέταση):</label>
-                    <textarea id="prok_plea" style="height: 100px; border: 2px solid #ffcc80;" placeholder="Γράψτε εδώ τις εξηγήσεις του υπόπτου (ΑΠΟΚΡΙΣΗ)..."></textarea>
+                    <textarea id="prok_plea" style="height: 100px; border: 1px solid #ccc;" placeholder="Γράψτε εδώ τις εξηγήσεις του υπόπτου (ΑΠΟΚΡΙΣΗ)..."></textarea>
                 </div>
             </div>
 
@@ -441,18 +440,18 @@
                     </div>
                 </div>
 
-                <div class="ai-grid">
+                <div class="grid-form" style="margin-top: 0;">
                     <div class="form-group"><label>Ημερομηνία Τέλεσης:</label><input type="text" id="ai_date"></div>
                     <div class="form-group"><label>Ώρα Τέλεσης:</label><input type="text" id="ai_time"></div>
-                    <div class="form-group"><label>Τόπος Τέλεσης:</label><input type="text" id="ai_loc" placeholder="π.χ. Σταυρό Θεσ/νίκης"></div>
+                    <div class="form-group" style="grid-column: span 2;"><label>Τόπος Τέλεσης:</label><input type="text" id="ai_loc" placeholder="π.χ. Σταυρό Θεσ/νίκης"></div>
                 </div>
                 
-                <button type="button" class="btn-add" style="width: 100%;" onclick="generateAutoCharge()">Σύνθεση Κειμένου</button>
+                <button type="button" class="btn-add" style="width: 100%; margin-top: 10px;" onclick="generateAutoCharge()">Σύνθεση Κειμένου</button>
             </div>
 
             <div class="form-group" style="margin-bottom: 12px;">
                 <label style="color:#0056b3; font-size: 13px;">Βασικό Κατηγορητήριο (Μπαίνει Σύλληψη, Δικαιώματα & Απολογία)</label>
-                <textarea id="apologia_charge_short" style="height: 50px; border: 2px solid #b3cce6;" placeholder="π.χ. παράβαση του... πράξεις που έλαβαν χώρα..."></textarea>
+                <textarea id="apologia_charge_short" style="height: 50px; border: 2px solid #b3cce6;" placeholder="π.χ. παράβαση των άρθρων... πράξεις που έλαβαν χώρα..."></textarea>
             </div>
             
             <div class="form-group" style="margin-bottom: 20px;">
@@ -785,7 +784,7 @@
         if (!selectedCrime) return;
         let lawInput = document.getElementById("ai_law");
         if (lawInput.value.trim() === "") { lawInput.value = selectedCrime; } 
-        else { lawInput.value += " και του " + selectedCrime; }
+        else { lawInput.value += " και " + selectedCrime; }
         dropdown.value = ""; 
     }
 
@@ -800,10 +799,11 @@
         
         let isMultiple = (lawInput.includes("και") || lawInput.includes(","));
         let actString = isMultiple ? "πράξεις οι οποίες έλαβαν χώρα" : "πράξη η οποία έλαβε χώρα";
+        let arthraString = isMultiple ? "των άρθρων" : "του άρθρου";
 
-        document.getElementById("apologia_charge_short").value = `παράβαση του ${lawInput}, ${actString} την ${dateStr} και ώρα ${timeStr} στο/στην ${locStr}`;
+        document.getElementById("apologia_charge_short").value = `παράβαση ${arthraString} ${lawInput}, ${actString} την ${dateStr} και ώρα ${timeStr} στο/στην ${locStr}`;
         if(document.getElementById("apologia_charge_details").value.trim() === "") {
-            document.getElementById("apologia_charge_details").value = "Ειδικότερα, ";
+            document.getElementById("apologia_charge_details").value = "Ειδικότερα, την ανωτέρω ημέρα, ώρα και τόπο... ";
         }
     }
 
@@ -833,7 +833,7 @@
         document.getElementById('doc_month').value = months[now.getMonth()];
         document.getElementById('doc_year').value = now.getFullYear();
         
-        refreshTimes(); // Καλεί τη νέα συνάρτηση για τις ώρες
+        refreshTimes(); // Καλεί τη συνάρτηση για τις ώρες
 
         document.getElementById('ai_date').value = dateStr;
         document.getElementById('arr_street_date').value = dateStr;
@@ -921,6 +921,19 @@
         document.getElementById("authDate").value = authDate ? authDate.replace(/\//g, "-") : "";
         document.getElementById("auth").value = toTitleCaseWords(auth);
         if (phone) document.getElementById("phone").value = phone;
+    }
+
+    function getProfileText() {
+        let v = id => document.getElementById(id).value.trim(); 
+        let text = `${v("surname")} ${v("name")} του ${v("father")} και της ${v("mother")}, γεν. ${v("dob")} στην ${v("pob")}, κάτοικος ${v("area")}, Δήμου ${v("dimos")}`;
+        if (v("odos")) text += `, οδός ${v("odos")}`;
+        if (v("arithmos")) text += `, αρ. ${v("arithmos")}`;
+        if (v("epaggelma")) text += `, επάγγελμα ${v("epaggelma")}`;
+        text += `, κάτοχος του υπ' αριθ. ${v("adt")} δελτίου ταυτότητας, εκδ. ${v("authDate")} από ${v("auth")}`;
+        if (v("afm") || v("doy")) text += `, με Α.Φ.Μ. ${v("afm")} από Δ.Ο.Υ. ${v("doy")}`;
+        if (v("phone")) text += `, κάτοχος της με αριθμό ${v("phone")} σύνδεσης κινητής τηλεφωνίας`;
+        if (v("email")) text += `, καθώς και της διεύθυνσης ηλεκτρονικού ταχυδρομείου (email) ${v("email")}`;
+        return text.replace(/\s+/g, ' ').replace(/ ,/g, ',');
     }
 
     let pStyle = "text-align: justify; font-family: 'Times New Roman'; font-size: 12pt; line-height: 115%; margin: 0cm; padding: 0cm;";
@@ -1013,7 +1026,7 @@
         <p style="${pStyle}">Ενημερώθηκε ότι μπορεί να λαμβάνει εγκαίρως γνώση των εγγράφων της δίκης, τα οποία επιδίδονται και με ηλεκτρονικά μέσα σύμφωνα με τις παρ. 1 και 4 του άρθρου 155 Κ.Π.Δ.</p>
         <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού πρώτα αναγνώστηκε και βεβαιώθηκε από όλους του παριστάμενους, υπογράφεται ως ακολούθως:</p>
         <p style="${pStyle}">&nbsp;</p>
-        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0"><tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr></table>`;
+        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0"><tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr></table>`;
         downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Ένορκη</title></head><body>" + body + "</body></html>", `ΕΚΘΕΣΗ_ΕΝΟΡΚΗ_ΜΑΡΤΥΡΑ_${v("surname")}.doc`);
     }
 
@@ -1084,7 +1097,7 @@
         <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${v("doc_start")} ώρα και περατώθηκε την ${v("doc_end")} ώρα.</p>
         <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού πρώτα αναγνώστηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
         <p style="${pStyle}">&nbsp;</p>
-        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0"><tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr></table>`;
+        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0"><tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr></table>`;
         downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Ανωμοτί</title></head><body>" + body + "</body></html>", `2_ΑΝΩΜΟΤΙ_ΕΞΕΤΑΣΗ_${v("surname")}.doc`);
     }
 
@@ -1122,7 +1135,7 @@
         let pleaAns = formatTextToParagraphs("<b>ΑΠΟΚΡΙΣΗ:</b> " + v("prok_plea")); 
 
         var body = `
-        <p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; padding: 0cm;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΥΠΟΠΤΟΥ ΧΩΡΙΣ ΟΡΚΟ (ΜΕΤΑ ΑΠΟ ΠΡΟΘΕΣΜΙΑ)</p>
+        <p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; padding: 0cm;">ΕΚΘΕΣΗ ΕΞΕΤΑΣ ΥΠΟΠΤΟΥ ΧΩΡΙΣ ΟΡΚΟ (ΜΕΤΑ ΑΠΟ ΠΡΟΘΕΣΜΙΑ)</p>
         <p style="${pStyle}">Στην Ασπροβάλτα, σήμερα την ${v("doc_date")} του μήνα ${v("doc_month")} του έτους ${v("doc_year")} ημέρα της εβδομάδας ${v("doc_day")} και ώρα ${v("doc_start")} ενώπιον εµού του ${anakr} του Α.T. Βόλβης, παρισταμένου και του ${banakr} της ίδιας υπηρεσίας, που προσλήφθηκε ως Β' Ανακριτικός Υπάλληλος, εμφανίσθηκε ${a_o} κατωτέρω ύποπτος, ${a_os}, αφού ερωτήθηκε για την ταυτότητά ${a_tou} κλπ., απάντησε ότι ονομάζεται ${getProfileText()}.</p>
         <p style="${pStyle}">&nbsp;</p>
         <p style="${pStyle}">Έπειτα ${a_o} ${a_exet}, μετά την προθεσμία που του χορηγήθηκε την ${d_date}, εξετάζεται χωρίς όρκο κατ' άρθρο 244 ΚΠΔ ως ακολούθως:</p>
@@ -1133,7 +1146,7 @@
         <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${v("doc_start")} ώρα και περατώθηκε την ${v("doc_end")} ώρα.</p>
         <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού πρώτα αναγνώστηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
         <p style="${pStyle}">&nbsp;</p>
-        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0"><tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr></table>`;
+        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0"><tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr></table>`;
         downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Ανωμοτί Μετά Προθεσμία</title></head><body>" + body + "</body></html>", `4_ΑΝΩΜΟΤΙ_ΜΕΤΑ_ΠΡΟΘΕΣΜΙΑ_${v("surname")}.doc`);
     }
 
@@ -1189,6 +1202,95 @@
             <tr><td style="width: 25%;">${a_sign}</td><td style="width: 25%;">Ο Συλλαβών</td><td style="width: 25%;">Ο Β΄ Ανακριτ. Υπάλλ.</td><td style="width: 25%;">Ο Ανακριτ. Υπάλληλος</td></tr>
         </table>`;
         downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Σύλληψη</title></head><body>" + body + "</body></html>", `1_ΕΚΘΕΣΗ_ΣΥΛΛΗΨΗΣ_${v("surname")}.doc`);
+    }
+
+    function exportRights() {
+        let v = id => document.getElementById(id).value.trim(); 
+        let gender = document.getElementById("gender").value; 
+        let anakr = document.getElementById("doc_anakr").value; let banakr = document.getElementById("doc_banakr").value;
+        let a_auton = (gender === 'M') ? "αυτόν" : "αυτήν"; let a_tou = (gender === 'M') ? "του" : "της"; let a_sign = (gender === 'M') ? "Ο λαβών γνώση κατηγορούμενος" : "Η λαβούσα γνώση κατηγορούμενη";
+        let str_start = v("rig_start");
+        let shortCharge = v("apologia_charge_short");
+
+        let rightsPStyle = "text-align: justify; font-family: 'Times New Roman'; font-size: 11pt; line-height: 115%; margin: 0cm; padding: 0cm;";
+
+        var body = `
+        <p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; padding: 0cm;">ΕΚΘΕΣΗ ΕΝΗΜΕΡΩΣΗΣ ΔΙΚΑΙΩΜΑΤΩΝ ΣΕ ΥΠΟΠΤΟ Ή ΚΑΤΗΓΟΡΟΥΜΕΝΟ</p>
+        <p style="${rightsPStyle}">Στην Ασπροβάλτα σήμερα την ${v("doc_date")}η του μήνα ${v("doc_month")} του έτους ${v("doc_year")}, ημέρα της εβδομάδας ${v("doc_day")} και ώρα ${str_start}΄, ενώπιον εμού του ${anakr} υπηρετούντος στο Αστυνομικό Τμήμα Βόλβης Θεσσαλονίκης, παρισταμένου και του ${banakr} της ιδίας Υπηρεσίας προσληφθείς ως Β’ Ανακριτικού Υπαλλήλου, προσκλήθηκε ο κατωτέρω σημειούμενος κατηγορούμενος, που ονομάζεται ${getProfileText()}, τον οποίο ενημερώσαμε ότι κατηγορείται για ${shortCharge} και εξηγήσαμε σαφώς σ’ ${a_auton}, βάσει του άρθρου 105 του Κ.Π. Δικονομίας όλα τα εκ των άρθρων 91, 95, 96, 97, 98, 100, 101, 103 και 104, 273 & 274 του Κ.Π.Δ. δικαιώματά ${a_tou} και αναλυτικότερα:</p>
+        <p style="${rightsPStyle}">&nbsp;</p>
+        <p style="${rightsPStyle}"><b>Α. Εκ του άρθρου 99 του Κ.Π.Δ., ήτοι παράσταση του κατηγορουμένου με συνήγορο:</b></p>
+        <p style="${rightsPStyle}"><b>1.</b> Ο Κατηγορούμενος έχει το δικαίωμα στην απολογία του και σε κάθε εξέτασή του, ακόμη και σ’ αυτήν που γίνεται σε αντιπαράσταση με μάρτυρες ή άλλους κατηγορούμενους, να παρίσταται με συνήγορο. Γι’ αυτό το σκοπό προσκαλείται 24 ώρες πριν από κάθε ανακριτική ενέργεια.</p>
+        <p style="${rightsPStyle}"><b>2.</b> Επιτρέπεται σύντμηση της προθεσμίας αυτής, αν από την αναβολή δημιουργείται κίνδυνος που η ύπαρξη του βεβαιώνεται ειδικά με έκθεση του ανακριτή ή του ανακριτικού υπαλλήλου.</p>
+        <p style="${rightsPStyle}"><b>3.</b> Ο ανακριτής έχει την υποχρέωση να διορίζει αυτεπαγγέλτως συνήγορο, αν το ζητήσει ρητά ο κατηγορούμενος. (Εξ αυτού, η Αστυνομική αρχή θα μεριμνήσει για την ανεύρεση συνηγόρου, εφ΄ όσον δεν έχετε και επιθυμείτε να προσλάβετε).</p>
+        <p style="${rightsPStyle}"><b>4.</b> Σε καμία περίπτωση δεν μπορεί να απαγορευθεί η επικοινωνία του κατηγορουμένου με τον συνήγορό του.</p>
+        <p style="${rightsPStyle}">&nbsp;</p>
+        <p style="${rightsPStyle}"><b>Β. Εκ του άρθρου 100 του Κ.Π.Δ., ήτοι ανακοίνωση των εγγράφων της ανάκρισης:</b></p>
+        <p style="${rightsPStyle}"><b>1.</b> Ο ανακριτής, μόλις μετά την κλήτευσή του εμφανισθεί η οδηγηθεί σ’ αυτόν ο κατηγορούμενος για να απολογηθεί, του ανακοινώνει το περιεχόμενο του κατηγορητηρίου και των άλλων εγγράφων της ανάκρισης. Επιτρέπεται επίσης στον κατηγορούμενο να μελετήσει ο ίδιος ή ο συνήγορός του το κατηγορητήριο και τα έγγραφα της ανάκρισης. Με γραπτή αίτηση του κατηγορουμένου και με δαπάνη του χορηγούνται σ’ αυτόν αντίγραφα του κατηγορητηρίου & των εγγράφων της ανάκρισης.</p>
+        <p style="${rightsPStyle}"><b>2.</b> Την ίδια υποχρέωση έχει και ο ανακριτής, και τα ίδια δικαιώματα ο κατηγορούμενος, όταν κληθεί ξανά σε συμπληρωματική απολογία, πάντως μετά το τέλος της ανάκρισης και προτού διαβιβασθεί η δικογραφία στον Εισαγγελέα, καλείται πάντοτε ο κατηγορούμενος να μελετήσει όλη τη δικογραφία. α) Αν όμως η ανάκριση εξακολούθησε περισσότερο από μήνα μετά την πρώτη ή κάθε μεταγενέστερη απολογία, δικαιούται ο κατηγορούμενος να ασκεί τα δικαιώματά του, μία φορά το μήνα και κάθε φορά ο ανακριτής συντάσσει σχετική έκθεση κάτω από την απολογία του κατηγορουμένου.</p>
+        <p style="${rightsPStyle}">&nbsp;</p>
+        <p style="${rightsPStyle}"><b>Γ. Εκ του άρθρου 103 του Κ.Π.Δ., ήτοι προθεσμία για την απολογία:</b></p>
+        <p style="${rightsPStyle}"><b>1.</b> Ο κατηγορούμενος έχει το δικαίωμα να ζητήσει προθεσμία τουλάχιστον 48 ώρες και δεν έχει υποχρέωση να απολογηθεί πριν περάσει η προθεσμία. <b>2.</b> Ο ανακριτής μπορεί να παρατείνει την προθεσμία ύστερα από αίτηση του κατηγορουμένου.</p>
+        <p style="${rightsPStyle}">&nbsp;</p>
+        <p style="${rightsPStyle}"><b>Δ. Εκ του άρθρου 105 του Κ.Π.Δ., ήτοι δικαιώματα του κατηγορουμένου στη προανάκριση:</b></p>
+        <p style="${rightsPStyle}"><b>1.</b> Τα δικαιώματα που προβλέπονται από τα άρθρα 91, 95, 96, 97, 98, 100, 101, 103 και 104 τα έχει ο κατηγορούμενος και στην προανάκριση. Στην περίπτωση όμως αυτή δεν είναι υποχρεωτικό να τηρηθεί η διάταξη που μνημονεύεται ανωτέρω στο άρθρο 101 παρ. 2 α. <b>2.</b> Όταν ενεργείται προανάκριση, σύμφωνα με το 245 παράγρ. 1 & 2, ο κατηγορούμενος μπορεί να ασκήσει τα δικαιώματα, που προβλέπονται στα άρθρα 102 και 102 και να υποβάλει εγγράφως την απολογία του εκπροσωπούμενος από συνήγορο, που διορίζεται κατά το άρθρο 96 παρ.2, εκτός αν θεωρείται αναγκαία η αυτοπρόσωπη εμφάνισή του, κατά την κρίση εκείνου που ενεργεί την προανάκριση.</p>
+        <p style="${rightsPStyle}">&nbsp;</p>
+        <p style="${rightsPStyle}"><b>Ε. Εκ του άρθρου 105 του Κ.Π.Δ., ήτοι εξαίρεση στο αυτόφωρο έγκλημα:</b></p>
+        <p style="${rightsPStyle}">- Όταν ενεργείται προανάκριση σύμφωνα με το άρθρο 243 παρ.2 του Κ.Π.Δ., η εξέταση γίνεται όπως ορίζεται στις διατάξεις των άρθρων 273 και 274 ( Έρευνα των μέσων υπεράσπισης ) και εκείνος που εξετάζεται έχει τα δικαιώματα που αναφέρονται στα άρθρα 103 και 104 του Κ.Π.Δ..</p>
+        <p style="${rightsPStyle}">&nbsp;</p>
+        <p style="${rightsPStyle}"><b>ΣΤ. Εκ του άρθρου 273 του Κ.Π.Δ., ήτοι εξέταση κατηγορουμένου:</b></p>
+        <p style="${rightsPStyle}"><b>1.</b> Την υποχρέωση αυτού που διενεργεί την προανάκριση, για την εξακρίβωση των στοιχείων ταυτότητας, τόπου κατοικίας - διαμονής του κατηγορουμένου, καθώς και την υποχρέωση του κατηγορούμενου ως προς την δήλωσή των και ακολούθως η καταχώριση αυτών στην σχετική έκθεση της απολογίας. <b>2.</b> Την υποχρέωση αυτού που διενεργεί την προανάκριση, να εκθέσει με πληρότητα και σαφήνεια την πράξη για την οποία κατηγορείται ο κατηγορούμενος, καθώς ότι ο κατηγορούμενος προσκαλείται να απολογηθεί. Ο κατηγορούμενος έχει το δικαίωμα να αρνηθεί να απαντήσει, καθώς και παραδώσει την απολογία του γραπτή.</p>
+        <p style="${rightsPStyle}">&nbsp;</p>
+        <p style="${rightsPStyle}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως :</p>
+        <p style="${rightsPStyle}">&nbsp;</p>
+        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0">
+            <tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr>
+        </table>`;
+        downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Δικαιώματα</title></head><body>" + body + "</body></html>", `2_ΕΚΘΕΣΗ_ΔΙΚΑΙΩΜΑΤΩΝ_${v("surname")}.doc`);
+    }
+
+    function exportApologia() {
+        let v = id => document.getElementById(id).value.trim(); 
+        let gender = document.getElementById("gender").value; 
+        let anakr = document.getElementById("doc_anakr").value; let banakr = document.getElementById("doc_banakr").value;
+        let a_o = (gender === 'M') ? "ο" : "η"; let a_os = (gender === 'M') ? "σημειούμενος κατηγορούμενος" : "σημειούμενη κατηγορούμενη"; let a_sign = (gender === 'M') ? "Ο Εξετασθείς" : "Η Εξετασθείσα";
+        
+        let str_start = v("apo_start"); let str_end = v("apo_end");
+        
+        let fullChargeText = v("apologia_charge_short");
+        if(v("apologia_charge_details")) fullChargeText += ". " + v("apologia_charge_details");
+        
+        let rightsAns = v("apologia_rights").replace(/[\n\r]+/g, " ");
+        let pastAns = v("apologia_past").replace(/[\n\r]+/g, " ");
+        let pleaAns = formatTextToParagraphs("<b>ΑΠΟΚΡΙΣΗ:</b> " + v("apologia_plea")); 
+
+        let getSigBlock = () => `
+        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0">
+            <tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr>
+        </table>`;
+
+        var body = `
+        <p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; padding: 0cm;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ (Κ.Π.Δ.)</p>
+        <p style="${pStyle}">Στην Ασπροβάλτα, σήμερα την ${v("doc_date")}η του μήνα ${v("doc_month")}, του έτους ${v("doc_year")}, ημέρα της εβδομάδας ${v("doc_day")} και ώρα ${str_start} ενώπιον εμού του ${anakr} του Α.Τ. Βόλβης, παριστάμενου και του ${banakr} της ιδίας Υπηρεσίας, εξετάζεται ${a_o} κατωτέρω ${a_os}.</p>
+        <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Πώς ονομάζεσαι κ.λ.π.; <b>ΑΠΟΚΡΙΣΗ:</b> ${getProfileText()}.</p>
+        <p style="${pStyle}">Ενταύθα γνωρίσαμε στον εξεταζόμενο ότι κατηγορείται για ${fullChargeText}</p>
+        <p style="${pStyle}">Στη συνέχεια αφού ανακοινώσαμε στον εξεταζόμενο το περιεχόμενο των εγγράφων της ανάκρισης, εξηγήσαμε εκ νέου με σαφήνεια σ’ αυτήν, σύμφωνα με τα άρθρα 95 και 105 ή 106 του Κώδικα Ποινικής Δικονομίας, όλα τα δικαιώματά του που προβλέπονται από τα άρθρα 91, 95, 96, 97, 98, 100, 101, 104 και 273 του Κώδικα Ποινικής Δικονομίας και ειδικότερα ότι δικαιούται: να παρίσταται μετά συνηγόρου, μετά του οποίου δεν μπορεί να απαγορευτεί η απολύτως απόρρητη επικοινωνία της σε καμιά περίπτωση, να μελετήσει η ίδια ή ο συνήγορός της τα έγγραφα της ανάκρισης και του κατηγορητηρίου (πραγματικών περιστατικών- κατηγορίας), να του χορηγηθούν αντίγραφα αυτών με δική του δαπάνη και μετά από γραπτή αίτησή του να ζητήσει προθεσμία μέχρι 48 ωρών, προ της παρέλευσης της οποίας δεν υποχρεούται σε απολογία και ότι δύναται να δοθεί παράταση της προθεσμίας αυτής με αίτησή του, να αρνηθεί να απαντήσει (δικαίωμα σιωπής και μη αυτοενεχοποίησης) και να παραδώσει την απολογία του γραπτή.</p>
+        <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Επιθυμείτε να κάνετε χρήση των δικαιωμάτων που σας γνωστοποιήθηκαν; <b>ΑΠΟΚΡΙΣΗ:</b> ${rightsAns}</p>
+        <p style="${pStyle}">Ύστερα από τα ανωτέρω προβήκαμε στην λήψη της απολογίας του. Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
+        <p style="${pStyle}">&nbsp;</p>
+        ${getSigBlock()}
+        <p style="${pStyle}">&nbsp;</p>
+        <p style="${pStyle}">&nbsp;</p>
+        <p style="${pStyle}">Στη συνέχεια, προβήκαμε στην εξέταση του κατηγορουμένου ως ακολούθως:</p>
+        <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Κατηγορήθηκες άλλη φορά και για ποια αιτία; <b>ΑΠΟΚΡΙΣΗ:</b> ${pastAns}</p>
+        <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Κατηγορείσαι ήδη για τις πράξεις που σου γνωστοποιήθηκαν ανωτέρω. Τι απολογείσαι;</p>
+        ${pleaAns}
+        <br>
+        <p style="${pStyle}">Στον/ην κατηγορούμενο γνωστοποιήσαμε ότι, σύμφωνα με το άρθρο 273 § 1 του Κ.Π.Δ., υποχρεούται να δηλώσει κάθε μεταβολή της κατοικίας ή της διαμονής του/της, μαζί με ακριβή νέα διεύθυνση, εγγράφως, στον Εισαγγελέα του δικαστηρίου στο οποίο εκκρεμεί κατά τον χρόνο δήλωσης η δικογραφία, σύμφωνα με το άρθρο 156 του Κ.Π.Δ.</p>
+        <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${str_start} ώρα και περατώθηκε την ${str_end} ώρα.</p>
+        <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
+        <p style="${pStyle}">&nbsp;</p>
+        ${getSigBlock()}`;
+        downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Απολογία</title></head><body>" + body + "</body></html>", `3_ΑΠΟΛΟΓΙΑ_ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ_${v("surname")}.doc`);
     }
 
     function exportSeizure() {
