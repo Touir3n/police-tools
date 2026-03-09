@@ -108,12 +108,17 @@
             <span id="ai_arrow">⬇️ Άνοιγμα</span>
         </div>
         <div id="ai_settings_panel" style="display: none; margin-top: 10px;">
-            <p style="font-size: 12px; color: #666;">Για να λειτουργήσουν τα εργαλεία AI, επικολλήστε το δωρεάν Gemini API Key σας. Το κλειδί <b>αποθηκεύεται μόνο τοπικά</b> στον browser σας για ασφάλεια.</p>
-            <div style="display: flex; gap: 10px;">
+            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Επικολλήστε το δωρεάν Gemini API Key σας. Το σύστημα θα βρει αυτόματα τα διαθέσιμα μοντέλα σας.</p>
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                 <input type="password" id="gemini_api_key" placeholder="Επικόλληση κλειδιού (π.χ. AIzaSy...)" style="flex: 2;">
-                <button onclick="saveApiKey()" style="background-color: #ff9800; flex: 1;">💾 Αποθήκευση</button>
+                <button onclick="saveApiKeyAndFetchModels()" style="background-color: #ff9800; flex: 1;">💾 Σύνδεση & Εύρεση Μοντέλων</button>
             </div>
-            <p id="key_status" style="font-size: 12px; color: green; display: none; margin-top: 5px;">✅ Το κλειδί αποθηκεύτηκε με επιτυχία!</p>
+            
+            <div id="model_selection_div" style="display: none; gap: 10px; align-items: center; background: #fff3e0; padding: 10px; border-radius: 4px; border: 1px solid #ffe0b2;">
+                <label style="font-size: 13px; font-weight: bold; color: #e65100; margin:0;">Ενεργό Μοντέλο AI:</label>
+                <select id="gemini_model" style="flex: 1; border-color: #ffb74d;" onchange="localStorage.setItem('gemini_model', this.value)"></select>
+                <span id="key_status" style="font-size: 13px; color: green; font-weight: bold;">✅ Συνδέθηκε!</span>
+            </div>
         </div>
     </div>
 
@@ -528,25 +533,78 @@
         }
     }
 
-    function saveApiKey() {
+    async function saveApiKeyAndFetchModels() {
         let key = document.getElementById("gemini_api_key").value.trim();
-        if (key) {
-            localStorage.setItem("gemini_api_key", key);
+        if (!key) { alert("Παρακαλώ εισάγετε ένα έγκυρο API Key."); return; }
+        
+        localStorage.setItem("gemini_api_key", key);
+        
+        try {
+            let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
+            let data = await res.json();
+            
+            if(data.error) {
+                alert("Σφάλμα ελέγχου κλειδιού: " + data.error.message);
+                return;
+            }
+            
+            let select = document.getElementById("gemini_model");
+            select.innerHTML = ""; // Καθαρισμός λίστας
+            
+            // Βρίσκει μόνο όσα μοντέλα υποστηρίζουν παραγωγή κειμένου
+            let validModels = data.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent"));
+            
+            validModels.forEach(m => {
+                let opt = document.createElement("option");
+                opt.value = m.name.replace("models/", "");
+                opt.text = m.displayName + " (" + opt.value + ")";
+                select.appendChild(opt);
+            });
+            
+            // Επιλέγει αυτόματα το 1.5 flash αν υπάρχει
+            let pref = validModels.find(m => m.name.includes("gemini-1.5-flash-8b")) || 
+                       validModels.find(m => m.name.includes("gemini-1.5-flash")) || 
+                       validModels.find(m => m.name.includes("gemini-1.0-pro"));
+            
+            if(pref) {
+                select.value = pref.name.replace("models/", "");
+            }
+            
+            document.getElementById("model_selection_div").style.display = "flex";
             document.getElementById("key_status").style.display = "block";
+            
+            localStorage.setItem("gemini_model", select.value);
+            
             setTimeout(() => { document.getElementById("key_status").style.display = "none"; }, 3000);
-        } else {
-            alert("Παρακαλώ εισάγετε ένα έγκυρο API Key.");
+            
+        } catch(e) {
+            alert("Αποτυχία σύνδεσης. Ελέγξτε τη σύνδεσή σας στο internet.");
         }
     }
 
+    // Φόρτωση κλειδιού κατά την εκκίνηση
     if (localStorage.getItem("gemini_api_key")) {
         document.getElementById("gemini_api_key").value = localStorage.getItem("gemini_api_key");
+        
+        if(localStorage.getItem("gemini_model")) {
+            document.getElementById("model_selection_div").style.display = "flex";
+            let opt = document.createElement("option");
+            opt.value = localStorage.getItem("gemini_model");
+            opt.text = localStorage.getItem("gemini_model") + " (Αποθηκευμένο)";
+            document.getElementById("gemini_model").appendChild(opt);
+        }
     }
 
     async function callGeminiAPI(prompt, buttonId, spinnerId) {
         let apiKey = localStorage.getItem("gemini_api_key");
+        let modelName = document.getElementById("gemini_model").value || localStorage.getItem("gemini_model");
+        
         if (!apiKey) {
-            alert("Απαιτείται Gemini API Key! Ανοίξτε τις 'Ρυθμίσεις Τεχνητής Νοημοσύνης' στην κορυφή της σελίδας, βάλτε το κλειδί σας και πατήστε Αποθήκευση.");
+            alert("Απαιτείται Gemini API Key! Ανοίξτε τις 'Ρυθμίσεις Τεχνητής Νοημοσύνης' στην κορυφή της σελίδας.");
+            return null;
+        }
+        if (!modelName) {
+            alert("Παρακαλώ πατήστε 'Σύνδεση & Εύρεση Μοντέλων' στις ρυθμίσεις AI για να φορτώσετε τα μοντέλα.");
             return null;
         }
 
@@ -556,8 +614,7 @@
         spinner.style.display = "inline-block";
 
         try {
-            // ΚΛΕΙΔΩΜΑ ΣΤΟ ΣΤΑΘΕΡΟ gemini-1.5-flash ΓΙΑ ΑΠΟΦΥΓΗ ΤΟΥ QUOTA ERROR (LIMIT: 0)
-            let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -571,6 +628,10 @@
             spinner.style.display = "none";
 
             if (data.error) {
+                if(data.error.message.includes("quota") || data.error.code === 429) {
+                     alert(`Όριο χρήσης! Η Google λέει ότι δεν έχετε δικαίωμα για το μοντέλο "${modelName}". Παρακαλώ ανοίξτε τις ρυθμίσεις, πατήστε 'Σύνδεση' και διαλέξτε άλλο (π.χ. gemini-1.5-flash-8b).`);
+                     return null;
+                }
                 throw new Error(data.error.message);
             }
             
@@ -666,7 +727,6 @@
         let locStr = document.getElementById("ai_loc").value.trim() || "...";
         if (!lawInput) { alert("Επιλέξτε τουλάχιστον ένα Αδίκημα."); return; }
         
-        // Λογική για πράξη / πράξεις
         let isMultiple = (lawInput.includes("και") || lawInput.includes(","));
         let actString = isMultiple ? "πράξεις οι οποίες έλαβαν χώρα" : "πράξη η οποία έλαβε χώρα";
 
@@ -1002,7 +1062,7 @@
         <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${v("doc_start")} ώρα και περατώθηκε την ${v("doc_end")} ώρα.</p>
         <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού πρώτα αναγνώστηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
         <p style="${pStyle}">&nbsp;</p>
-        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0"><tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr></table>`;
+        <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin: 0cm; margin-bottom: 0cm; padding: 0cm;" border="0"><tr><td style="width: 33%;">${a_sign}</td><td style="width: 33%;">Ο Β’ Ανακριτικός Υπάλληλος</td><td style="width: 33%;">Ο Ανακριτικός Υπάλληλος</td></tr></table>`;
         downloadWordDocument("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Προθεσμία</title></head><body>" + body + "</body></html>", `3_ΧΟΡΗΓΗΣΗ_ΠΡΟΘΕΣΜΙΑΣ_${v("surname")}.doc`);
     }
 
